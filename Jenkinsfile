@@ -6,5 +6,16 @@ pipeline {
         sh './gradlew war'
       }
     }
+    stage('Test') {
+      steps {
+        sh './gradlew test'
+      }
+    }
+    stage('Docker image') {
+      steps {
+        sh '''./gradlew buildDockerfile && \
+  docker build -t orn/example-java-servlet build'''
+      }
+    }
   }
 }
