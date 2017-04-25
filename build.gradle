@@ -1,0 +1,80 @@
+description = 'ORN demo Java servlet project'
+
+apply plugin: 'war'
+
+import com.bmuschko.gradle.docker.tasks.image.Dockerfile
+import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
+
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.bmuschko:gradle-tomcat-plugin:2.2.5'
+        classpath 'io.spring.gradle:dependency-management-plugin:1.0.0.RELEASE'
+        classpath 'com.bmuschko:gradle-docker-plugin:3.0.6'
+    }
+}
+
+apply plugin: 'com.bmuschko.tomcat'
+apply plugin: 'io.spring.dependency-management'
+apply plugin: 'com.bmuschko.docker-remote-api'
+
+repositories {
+    mavenCentral()
+}
+
+dependencyManagement {
+    imports {
+        mavenBom 'org.arquillian:arquillian-universe:1.1.13.3'
+    }
+}
+
+
+dependencies {
+
+    providedCompile 'javax.servlet:javax.servlet-api:3.1.0'
+    
+    def tomcatVersion = '8.0.43'
+    def tomcatDeps = ["org.apache.tomcat.embed:tomcat-embed-core:${tomcatVersion}",
+            "org.apache.tomcat.embed:tomcat-embed-logging-juli:${tomcatVersion}",
+            "org.apache.tomcat.embed:tomcat-embed-jasper:${tomcatVersion}"]
+
+    tomcat tomcatDeps
+    
+    testCompile tomcatDeps
+    testCompile 'junit:junit:4.12'
+    testCompile 'org.arquillian.universe:arquillian-junit'
+    testCompile 'org.jboss.arquillian.container:arquillian-tomcat-embedded-8:1.0.0'
+
+}
+
+docker {
+    certPath = null
+}
+
+task buildDockerfile(type: Dockerfile, dependsOn: war) {
+
+    destFile = project.file('build/Dockerfile')
+    from "tomcat:8.0-jre8"
+    maintainer 'Tim Dudgeon <tdudgeon@informaticsmatters.com>'
+
+    runCommand("rm -rf /usr/local/tomcat/webapps/*")
+
+    def warFile = tasks.war.outputs.files.singleFile
+    addFile('libs/' + warFile.name, "/usr/local/tomcat/webapps/ROOT.war")
+
+    exposePort(8080)
+}
+
+// build image is broken due to docker-java issues
+// https://github.com/bmuschko/gradle-docker-plugin/issues/364
+//task buildDockerImage(type: DockerBuildImage) {
+//    dependsOn buildDockerfile
+//    inputDir = buildDockerfile.destFile.parentFile
+//    tag = "orn/example-java-servlet"
+//}
+
+

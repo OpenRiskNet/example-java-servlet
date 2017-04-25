@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<arquillian>
+  <container qualifier="tomcat" default="true">
+    <configuration>
+      <property name="workDir">build/work</property>
+      <property name="unpackArchive">true</property>
+      <property name="bindHttpPort">9080</property>
+    </configuration>
+  </container>
+</arquillian>
