@@ -4,7 +4,7 @@ pipeline {
     stage('Build') {
       steps {
         sh './gradlew war'
-        archiveArtifacts artifacts: 'build/libs/*.war', fingerprint: true
+        archiveArtifacts artifacts: 'build/libs/*.war'
       }
     }
     stage('Test') {
@@ -13,7 +13,7 @@ pipeline {
       }
       post {
         always {
-          archiveArtifacts artifacts: 'build/reports'
+          archiveArtifacts artifacts: 'build/reports/**.*'
         }
       }
     }
@@ -25,8 +25,8 @@ pipeline {
     }
     stage('Docker push image') {
       environment { 
-                DOCKER_CREDENTIALS = credentials('DOCKER_HUB_TDUDGEON') 
-            }
+        DOCKER_CREDENTIALS = credentials('DOCKER_HUB_TDUDGEON') 
+      }
       steps {
 	sh 'docker login -u $DOCKER_CREDENTIALS_USR -p $DOCKER_CREDENTIALS_PSW'
         sh 'docker push informaticsmatters/orn-example-java-servlet'
