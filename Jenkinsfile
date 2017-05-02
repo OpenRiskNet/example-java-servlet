@@ -11,11 +11,16 @@ pipeline {
         sh './gradlew test'
       }
     }
-    stage('Docker image') {
+    stage('Docker build image') {
       steps {
         sh '''./gradlew buildDockerfile && \
-  docker build -t orn/example-java-servlet build'''
+  docker build -t informaticsmatters/orn-example-java-servlet build'''
       }
     }
+    stage('Docker push image') {
+      steps {
+        sh 'docker push'
+      }
+    }  
   }
 }
