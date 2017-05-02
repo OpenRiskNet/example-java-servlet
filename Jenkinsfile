@@ -3,7 +3,7 @@ pipeline {
   stages {
     stage('Build') {
       steps {
-        sh './gradlew war'
+        sh './gradlew clean war'
         archiveArtifacts artifacts: 'build/libs/*.war', fingerprint: false
       }
     }
