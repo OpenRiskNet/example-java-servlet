@@ -19,7 +19,7 @@ pipeline {
     }
     stage('Docker push image') {
       steps {
-        sh 'docker push'
+        sh 'docker push informaticsmatters/orn-example-java-servlet'
       }
     }  
   }
