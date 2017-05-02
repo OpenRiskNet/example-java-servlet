@@ -11,10 +11,10 @@ pipeline {
       steps {
         sh './gradlew test'
       }
-    }
-    post {
-      always {
-        archiveArtifacts artifacts: 'build/reports'
+      post {
+        always {
+          archiveArtifacts artifacts: 'build/reports'
+        }
       }
     }
     stage('Docker build image') {
