@@ -19,6 +19,7 @@ pipeline {
     }
     stage('Docker push image') {
       steps {
+	sh 'docker login -u $DOCKER_HUB_TDUDGEON_USER -p $DOCKER_HUB_TDUDGEON_USER_PASSWORD'
         sh 'docker push informaticsmatters/orn-example-java-servlet'
       }
     }  
