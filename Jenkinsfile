@@ -4,7 +4,7 @@ pipeline {
     stage('Build') {
       steps {
         sh './gradlew war'
-        archiveArtifacts artifacts: 'build/libs/*.war'
+        archiveArtifacts artifacts: 'build/libs/*.war', fingerprint: false
       }
     }
     stage('Test') {
@@ -13,7 +13,7 @@ pipeline {
       }
       post {
         always {
-          archiveArtifacts artifacts: 'build/reports/**.*'
+          archiveArtifacts artifacts: 'build/reports/**/*.*'
         }
       }
     }
