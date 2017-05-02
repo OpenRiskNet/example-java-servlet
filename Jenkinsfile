@@ -18,8 +18,11 @@ pipeline {
       }
     }
     stage('Docker push image') {
+      environment { 
+                DOCKER_CREDENTIALS = credentials('DOCKER_HUB_TDUDGEON') 
+            }
       steps {
-	sh 'docker login -u $DOCKER_HUB_TDUDGEON_USER -p $DOCKER_HUB_TDUDGEON_USER_PASSWORD'
+	sh 'docker login -u $DOCKER_CREDENTIALS_USR -p $DOCKER_CREDENTIALS_PSW'
         sh 'docker push informaticsmatters/orn-example-java-servlet'
       }
     }  
