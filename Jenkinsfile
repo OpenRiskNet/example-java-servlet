@@ -4,11 +4,17 @@ pipeline {
     stage('Build') {
       steps {
         sh './gradlew war'
+        archiveArtifacts artifacts: 'build/libs/*.war', fingerprint: true
       }
     }
     stage('Test') {
       steps {
         sh './gradlew test'
+      }
+    }
+    post {
+      always {
+        archiveArtifacts artifacts: 'build/reports'
       }
     }
     stage('Docker build image') {
