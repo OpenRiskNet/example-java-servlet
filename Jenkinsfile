@@ -26,7 +26,7 @@ pipeline {
     }
     stage('Docker push image') {
       environment { 
-        DOCKER_CREDENTIALS = credentials('DOCKER_HUB_TDUDGEON') 
+        DOCKER_CREDENTIALS = credentials('DOCKER_HUB_PUSH') 
       }
       steps {
 	sh 'docker login -u $DOCKER_CREDENTIALS_USR -p $DOCKER_CREDENTIALS_PSW'
