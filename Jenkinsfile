@@ -21,7 +21,7 @@ pipeline {
     stage('Docker build image') {
       steps {
         sh '''./gradlew buildDockerfile && \
-  docker build -t openrisknet/orn-example-java-servlet build'''
+  docker build -t openrisknet/example-java-servlet build'''
       }
     }
     stage('Docker push image') {
@@ -31,7 +31,7 @@ pipeline {
       steps {
         sh 'echo "pushing using login $DOCKER_CREDENTIALS_USR"'
 	sh 'docker login -u $DOCKER_CREDENTIALS_USR -p $DOCKER_CREDENTIALS_PSW'
-        sh 'docker push openrisknet/orn-example-java-servlet'
+        sh 'docker push openrisknet/example-java-servlet'
       }
     }  
   }
