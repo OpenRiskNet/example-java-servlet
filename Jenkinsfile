@@ -29,7 +29,7 @@ pipeline {
         DOCKER_CREDENTIALS = credentials('DOCKER_HUB_PUSH') 
       }
       steps {
-        echo pushing using login $DOCKER_CREDENTIALS_USR
+        sh 'echo "pushing using login $DOCKER_CREDENTIALS_USR"'
 	sh 'docker login -u $DOCKER_CREDENTIALS_USR -p $DOCKER_CREDENTIALS_PSW'
         sh 'docker push openrisknet/orn-example-java-servlet'
       }
