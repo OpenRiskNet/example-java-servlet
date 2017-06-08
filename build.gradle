@@ -65,9 +65,9 @@ task buildDockerfile(type: Dockerfile, dependsOn: war) {
 
     def warFile = tasks.war.outputs.files.singleFile
     addFile('libs/' + warFile.name, "/usr/local/tomcat/webapps/ROOT.war")
-	runCommand('groupadd -r tomcat -g 501')
-	runCommand('useradd -u 501 -m -g tomcat tomcat')
-	runCommand('chown -R tomcat:tomcat /usr/local/tomcat')
+	//runCommand('groupadd -r tomcat -g 501')
+	runCommand('useradd -u 501 -m -g root tomcat')
+	runCommand('chown -R tomcat:root /usr/local/tomcat')
 	
 	user('501')
 
