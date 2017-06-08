@@ -69,7 +69,7 @@ task buildDockerfile(type: Dockerfile, dependsOn: war) {
 	runCommand('useradd -u 501 -m -g tomcat tomcat')
 	runCommand('chown -R tomcat:tomcat /usr/local/tomcat')
 	
-	user('tomcat')
+	user('501')
 
     exposePort(8080)
 }
