@@ -1,0 +1,74 @@
+apiVersion: v1
+kind: Template
+metadata:
+  name: service
+  annotations:
+    description: "Java servlet example"
+    iconClass: "icon-tomcat"
+    tags: "servlet,java,openrisknet"
+labels:
+  app: example-java-servlet
+  template: service
+message: "Example servlet has been deployed."  
+
+objects:
+- apiVersion: v1
+  kind: ReplicationController
+  metadata:
+    name: ${APP_NAME}
+  spec:
+    replicas: 1  
+    selector:    
+      name: ${APP_NAME}
+    template:    
+      metadata:
+        labels:  
+          name: ${APP_NAME}
+      spec:
+        containers:
+        - image: openrisknet/example-java-servlet
+          name: ${APP_NAME}
+          env:
+          - name: GREETING
+            value: ${GREETING}
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+        restartPolicy: Always
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: ${APP_NAME}
+  spec:
+    ports:
+    - name: http
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    selector:
+      name: ${APP_NAME}
+    sessionAffinity: None
+    type: ClusterIP	  
+- apiVersion: v1
+  kind: Route
+  metadata:
+    name: ${APP_NAME}
+  spec:
+    host: ${APPLICATION_DOMAIN}
+    port:
+      targetPort: http
+    to: 
+      name: ${APP_NAME}
+      kind: Service
+    wildcardPolicy: None
+
+parameters:
+- name: APP_NAME
+  description: Application name
+  value: example-java-servlet
+- name: GREETING
+  description: The text for the greeting
+  value: Hello
+- name: APPLICATION_DOMAIN
+  description: "The exposed hostname that will route to the service, if left blank a value will be defaulted."
+  value: ""

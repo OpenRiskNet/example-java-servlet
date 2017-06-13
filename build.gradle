@@ -14,7 +14,7 @@ buildscript {
     dependencies {
         classpath 'com.bmuschko:gradle-tomcat-plugin:2.2.5'
         classpath 'io.spring.gradle:dependency-management-plugin:1.0.0.RELEASE'
-        classpath 'com.bmuschko:gradle-docker-plugin:3.0.6'
+        classpath 'com.bmuschko:gradle-docker-plugin:3.0.7'
     }
 }
 
