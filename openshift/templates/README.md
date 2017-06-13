@@ -10,7 +10,7 @@ For simplicity these examplea ssume you are working in an empty, disposable proj
 from the project so that we can start from fresh using this:
 
 ```sh
-oc delete all --all
+$ oc delete all --all
 ``` 
 Beware that thus will do exactly what it says on the can for your current project.
 
@@ -27,19 +27,19 @@ in Openshift, and is used to illustrate some basic patterns.
 To view the template:
 
 ```sh
-cat $PATH_TO_REPO/openshift/templates/pod.yml
+$ cat $PATH_TO_REPO/openshift/templates/pod.yml
 ```
 
 To process the template and convert it into object definitions:
 
 ```sh
-oc process -f $PATH_TO_REPO/openshift/templates/pod.yml
+$ oc process -f $PATH_TO_REPO/openshift/templates/pod.yml
 ```
 
 or, better for readability, in YAML format:
 
 ```sh
-oc process -o yaml -f $PATH_TO_REPO/openshift/templates/pod.yml
+$ oc process -o yaml -f $PATH_TO_REPO/openshift/templates/pod.yml
 ```
 
 This just give the definitions of the pod to create. To actually create it:
@@ -50,7 +50,7 @@ oc process -f $PATH_TO_REPO/openshift/templates/pod.yml | oc create -f -
 
 Now check what is present
 ```sh
-oc get all
+$ oc get all
 ```
 
 You will see one pod. To see more about it:
@@ -62,7 +62,7 @@ oc describe po/example-java-servlet
 Creating this pod works, and our Docker image is working. But how do we know this? We can't access the pod and there is no service or route set up. All we can really do is look at the logs, or ssh to the contianer. Let's ssh to it:
 
 ```sh
-oc rsh po/example-java-servlet
+$ oc rsh po/example-java-servlet
 $ curl "http://localhost:8080"
 Hello unauthenticated user
 ```
@@ -71,8 +71,8 @@ Finally, our app uses an environment variable to configure the greeting it displ
 so to use this feature try this:
 
 ```sh
-oc delete all --all
-oc process -f $PATH_TO_REPO/openshift/templates/pod.yml -p GREETING=WTF | oc create -f -
+$ oc delete all --all
+$ oc process -f $PATH_TO_REPO/openshift/templates/pod.yml -p GREETING=WTF | oc create -f -
 ```
 
 (note that we first need to delete the old pod before deploying it again).
@@ -92,7 +92,7 @@ Our replication controller template handles creating the pod that the previous s
 First clean up from before:
 
 ```sh
-oc delete all --all
+$ oc delete all --all
 ```
 
 Now apply the template and create the objects (we'll just jump to the action here, though you can check it out step 
@@ -105,7 +105,7 @@ oc process -f $PATH_TO_REPO/openshift/templates/replication-controller.yml | oc 
 Let's see the pods:
 
 ```sh
-oc get pods
+$ oc get pods
 NAME                         READY     STATUS    RESTARTS   AGE
 example-java-servlet-r9fs4   1/1       Running   0          58m
 ```
@@ -115,12 +115,12 @@ You can also look in the web console and you will see the pod running.
 Now let's scale the pod:
 
 ```sh
-oc scale --replicas=3 replicationcontrollers example-java-servlet
+$ oc scale --replicas=3 replicationcontrollers example-java-servlet
 replicationcontroller "example-java-servlet" scaled
 ```
 
 ```sh
-oc get pods
+$ oc get pods
 NAME                         READY     STATUS    RESTARTS   AGE
 example-java-servlet-bx459   1/1       Running   0          7s
 example-java-servlet-r9fs4   1/1       Running   0          1h
@@ -135,9 +135,9 @@ A service makes the pods accessible within the Kubernetes cluster, and provides 
 The create the service as well as the replication controller use the service.yml template.
 
 ```sh
-oc delete all --all
+$ oc delete all --all
 
-oc process -f $PATH_TO_REPO/openshift/templates/service.yml | oc create -f -
+$ oc process -f $PATH_TO_REPO/openshift/templates/service.yml | oc create -f -
 replicationcontroller "example-java-servlet" created
 service "example-java-servlet" created
 ```
@@ -145,7 +145,7 @@ service "example-java-servlet" created
 Now you will see a pod, its replication controller and the service
 
 ```sh
-oc get all
+$ oc get all
 NAME                      DESIRED   CURRENT   READY     AGE
 rc/example-java-servlet   1         1         1         1m
 
@@ -164,9 +164,9 @@ You need to create a route to do this.
 A route provides access from outside the cluster, providing a proxy to the service
 
 ```sh
-oc delete all --all
+$ oc delete all --all
 
-oc process -f $PATH_TO_REPO/openshift/templates/route.yml | oc create -f -
+$ oc process -f $PATH_TO_REPO/openshift/templates/route.yml | oc create -f -
 replicationcontroller "example-java-servlet" created
 service "example-java-servlet" created
 route "example-java-servlet" created
@@ -175,7 +175,7 @@ route "example-java-servlet" created
 Let's see what we now have:
 
 ```sh
-oc get all
+$ oc get all
 NAME                      DESIRED   CURRENT   READY     AGE
 rc/example-java-servlet   1         1         1         5s
 
