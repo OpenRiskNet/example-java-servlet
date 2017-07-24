@@ -6,8 +6,8 @@ Alternatively you can run directly from GitHub by using the full URL to the raw 
 In the examples below $PATH\_TO\_REPO would either be the rull or relative path to your local copy or something like:
 https://raw.githubusercontent.com/OpenRiskNet/example-java-servlet/master/
 
-For simplicity these examplea ssume you are working in an empty, disposable project. At various stages we delte EVEYTHING
-from the project so that we can start from fresh using this:
+For simplicity these examples assume you are working in an empty, disposable project. At various stages we delete
+EVEYTHING from the project so that we can start from fresh using this:
 
 ```sh
 $ oc delete all --all
@@ -16,7 +16,11 @@ Beware that thus will do exactly what it says on the can for your current projec
 
 This guide concentrate on using the CLI, though much if not all of this can be done from the web console.
 It's good to have the web console open at the overview page of your project so that you can see that action happening
-as you do it. 
+as you do it.
+
+**NOTE**: the image used runs as root so you must change the security settings as described 
+[here](https://github.com/OpenRiskNet/home/blob/master/openshift/docker_userids.md).
+The simplest (but not secure) approach is to change the runAsUser value to RunAsAny.
 
 ## pod.yml
 
