@@ -7,9 +7,9 @@ metadata:
     iconClass: "icon-tomcat"
     tags: "servlet,java,openrisknet"
 labels:
-  app: example-java-servlet
+  app: hello-servlet
   template: service
-message: "Example servlet has been deployed."  
+message: "Example servlet has been deployed."
 
 objects:
 - apiVersion: v1
@@ -26,7 +26,7 @@ objects:
           name: ${APP_NAME}
       spec:
         containers:
-        - image: openrisknet/example-java-servlet
+        - image: tdudgeon/hello-example-servlet
           name: ${APP_NAME}
           env:
           - name: GREETING
@@ -51,10 +51,28 @@ objects:
       name: ${APP_NAME}
     sessionAffinity: None
     type: ClusterIP	  
+- apiVersion: v1
+  kind: Route
+  metadata:
+    name: ${APP_NAME}
+    annotations:
+      kubernetes.io/tls-acme: "true"
+  spec:
+    host: ${APPLICATION_DOMAIN}
+    port:
+      targetPort: http
+    to: 
+      name: ${APP_NAME}
+      kind: Service
+    wildcardPolicy: None
+
 parameters:
-- description: Application name
-  name: APP_NAME
-  value: example-java-servlet
-- description: The text for the greeting
-  name: GREETING
+- name: APP_NAME
+  description: Application name
+  value: hello-servlet
+- name: GREETING
+  description: The text for the greeting
   value: Hello
+- name: APPLICATION_DOMAIN
+  description: "The exposed hostname that will route to the service, if left blank a value will be defaulted."
+  value: ""

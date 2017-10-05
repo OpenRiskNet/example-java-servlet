@@ -32,6 +32,8 @@ objects:
           ports:
           - containerPort: 8080
             protocol: TCP
+          securityContext:
+          - runAsUser: MustRunAsNonRoot
         restartPolicy: Always
 
 parameters:

@@ -23,8 +23,8 @@ objects:
         targetPort: 8080
         name: http
         protocol: TCP
-#    securityContext:
-#    - runAsUser: MustRunAsNonRoot
+      securityContext:
+      - runAsUser: MustRunAsNonRoot
 parameters:
 - description: The text for the greeting
   name: GREETING

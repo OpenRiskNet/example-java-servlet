@@ -1,0 +1,9 @@
+{
+  "realm": "openrisknet",
+  "auth-server-url": "https://secure-sso.os.informaticsmatters.com/auth",
+  "ssl-required": "external",
+  "resource": "hello-servlet",
+  "public-client": true,
+  "use-resource-role-mappings": true,
+  "disable-trust-manager": true
+}
