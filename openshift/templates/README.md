@@ -8,10 +8,10 @@ Alternatively you can run directly from GitHub by using the full URL to the raw 
 In the examples below $PATH\_TO\_REPO would either be the rull or relative path to your local copy or something like:
 https://raw.githubusercontent.com/OpenRiskNet/example-java-servlet/master/
 
-For simplicity these examplea ssume you are working in an empty, disposable project. At various stages we delte EVEYTHING
-from the project so that we can start from fresh using this:
+For simplicity these examples assume you are working in an empty, disposable project. At various stages we delete
+EVEYTHING from the project so that we can start from fresh using this:
 
-```sh
+```
 $ oc delete all --all
 ```
 
@@ -19,7 +19,11 @@ Beware that thus will do exactly what it says on the can for your current projec
 
 This guide concentrate on using the CLI, though much if not all of this can be done from the web console.
 It's good to have the web console open at the overview page of your project so that you can see that action happening
-as you do it. 
+as you do it.
+
+**NOTE**: the image used runs as root so you must change the security settings as described 
+[here](https://github.com/OpenRiskNet/home/blob/master/openshift/docker_userids.md).
+The simplest (but not secure) approach is to change the runAsUser value to RunAsAny.
 
 ## Setting security constraints
 
@@ -30,19 +34,23 @@ That is good practice (not running as the root user) but its not good enough for
 as by default OpenShift runs the container using randomly assigned non privileged user, not our 501 user.
 So we need to adjust the default settings. Firstly we need to tell the pod to run as the specified user. In the templates 
 you will see a section like this:
+
 ```
-      securityContext:
-      - runAsUser: MustRunAsNonRoot
-``` 
+securityContext:
+- runAsUser: MustRunAsNonRoot
+```
+
 This tells OpenShift that the pod should be run as the user specified in the Dockerfile, but that user cannot be the root user.
 See [here](https://docs.openshift.org/latest/architecture/additional_concepts/authorization.html#security-context-constraints) 
 for more details.
 
 Also, we need to give the user who is doung the deployment privileges to do this, as by default normal users belong to the 
 `restricted` security context constraint (SCC). One way to do this is to allow this for all authenticated users like this:
+
 ```
 oc adm policy add-scc-to-group anyuid system:authenticated
 ```
+
 See [here](https://docs.openshift.org/latest/admin_guide/manage_scc.html#enable-images-to-run-with-user-in-the-dockerfile)
 for more details.
 
@@ -54,42 +62,43 @@ in Openshift, and is used to illustrate some basic patterns.
 
 To view the template:
 
-```sh
+```
 $ cat $PATH_TO_REPO/openshift/templates/pod.yml
 ```
 
 To process the template and convert it into object definitions:
 
-```sh
+```
 $ oc process -f $PATH_TO_REPO/openshift/templates/pod.yml
 ```
 
 or, better for readability, in YAML format:
 
-```sh
+```
 $ oc process -o yaml -f $PATH_TO_REPO/openshift/templates/pod.yml
 ```
 
 This just give the definitions of the pod to create. To actually create it:
 
-```sh
+```
 $ oc process -f $PATH_TO_REPO/openshift/templates/pod.yml | oc create -f -
 ```
 
 Now check what is present
-```sh
-oc get all
+
+```
+$ oc get all
 ```
 
 You will see one pod. To see more about it:
 
-```sh
+```
 $ oc describe po/example-java-servlet
 ```
 
 Creating this pod works, and our Docker image is working. But how do we know this? We can't access the pod and there is no service or route set up. All we can really do is look at the logs, or ssh to the contianer. Let's ssh to it:
 
-```sh
+```
 $ oc rsh po/example-java-servlet
 $ curl "http://localhost:8080"
 Hello unauthenticated user
@@ -98,7 +107,7 @@ Hello unauthenticated user
 Finally, our app uses an environment variable to configure the greeting it displays, and the template is aware of this,
 so to use this feature try this:
 
-```sh
+```
 $ oc delete all --all
 $ oc process -f $PATH_TO_REPO/openshift/templates/pod.yml -p GREETING=WTF | oc create -f -
 ```
@@ -119,20 +128,20 @@ Our replication controller template handles creating the pod that the previous s
 
 First clean up from before:
 
-```sh
+```
 $ oc delete all --all
 ```
 
 Now apply the template and create the objects (we'll just jump to the action here, though you can check it out step 
 by step as before if you prefer):
 
-```sh
+```
 $ oc process -f $PATH_TO_REPO/openshift/templates/replication-controller.yml | oc create -f -
 ```
 
 Let's see the pods:
 
-```sh
+```
 $ oc get pods
 NAME                         READY     STATUS    RESTARTS   AGE
 example-java-servlet-r9fs4   1/1       Running   0          58m
@@ -142,12 +151,12 @@ You can also look in the web console and you will see the pod running.
 
 Now let's scale the pod:
 
-```sh
+```
 $ oc scale --replicas=3 replicationcontrollers example-java-servlet
 replicationcontroller "example-java-servlet" scaled
 ```
 
-```sh
+```
 $ oc get pods
 NAME                         READY     STATUS    RESTARTS   AGE
 example-java-servlet-bx459   1/1       Running   0          7s
@@ -162,7 +171,7 @@ Pretty good. But we still can't really access the app properly. To do so we need
 A service makes the pods accessible within the Kubernetes cluster, and provides load balancing between replicas of the pod.
 The create the service as well as the replication controller use the service.yml template.
 
-```sh
+```
 $ oc delete all --all
 $ oc process -f $PATH_TO_REPO/openshift/templates/service.yml | oc create -f -
 replicationcontroller "example-java-servlet" created
@@ -171,7 +180,7 @@ service "example-java-servlet" created
 
 Now you will see a pod, its replication controller and the service
 
-```sh
+```
 $ oc get all
 NAME                      DESIRED   CURRENT   READY     AGE
 rc/example-java-servlet   1         1         1         1m
@@ -190,7 +199,7 @@ You need to create a route to do this.
 
 A route provides access from outside the cluster, providing a proxy to the service
 
-```sh
+```
 $ oc delete all --all
 $ oc process -f $PATH_TO_REPO/openshift/templates/route.yml | oc create -f -
 replicationcontroller "example-java-servlet" created
@@ -200,7 +209,7 @@ route "example-java-servlet" created
 
 Let's see what we now have:
 
-```sh
+```
 $ oc get all
 NAME                      DESIRED   CURRENT   READY     AGE
 rc/example-java-servlet   1         1         1         5s
