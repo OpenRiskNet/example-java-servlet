@@ -3,7 +3,8 @@
 This recipe describes how to deploy this example servlet to an OpenShift environment that is providing SSO
 capabilities using Keycloak (Red Hat SSO).
 
-**NOTE**: this is work in progress - do probably don't want to try this yet.
+A simpler version that shows how to deploy the app using templates, but without using Keycloak for authentication 
+can be found [here](README.md).
 
 ## Overview
 
@@ -55,7 +56,8 @@ Create an OpenShift environment as follows:
 1. Deploy Keycloak to the openrisknet-infra project according to the [standard recipe](https://github.com/OpenRiskNet/home/tree/master/openshift/sso).
 1. Deploy the ACME controller to the openrisknet-infra project according to the [standard recipe](https://github.com/OpenRiskNet/home/tree/master/openshift/certificates).
 1. Set up permissions as described in the [basic recipe](README.md) to allow containers to be run as a specified user.
-1. Create the client configuration in the keycloak realm and add a user with `standard-user` role [TODO - create a template for this]
+1. Create the client configuration in Keycloak's openrisknet realm (note: [openshift/keycloak/hello-servlet-client.json]() can be used as a template).
+1. Create  a user with `standard-user` role in the openrisknet realm.
 
 ## Deploy Hello Servlet to OpenShift
  
@@ -67,11 +69,37 @@ oc new-project hello-servlet
 Review the [openshift/keycloak/deploy.yaml]() file with respect to your environment. You will need to specify some paramters when deploying.
 Deploy with something like this:
 ```
-oc process -f openshift/keycloak/route.yml -p APPLICATION_DOMAIN=hello.os.informaticsmatters.com | oc create -f -
+oc process -f openshift/keycloak/route.yml -p APPLICATION_DOMAIN=hello.os.informaticsmatters.com -p GREETING=Hiya | oc create -f -
 ```
-Change the APPLICATION_DOMAIN accordingly to get a suitable host name for your app.
+Change the APPLICATION_DOMAIN and GREETING parameters accordingly to get a suitable host name for your app and a customised greeting.
 
 Once deployed the ACME Controller will provide TLS support for the route.
 Try to access it and you will see the Keycloak login prompt.
+Login as the user you created in the openrisknet realm.
+You should see the customised greeting message, something like this:
+
+Hiya orn1
+
+## Production use
+
+The keycloak.json file specifies `"disable-trust-manager": true`. This is to allow non trusted certificates to be used.
+For production use certificates will be trusted and this parameter must be removed or set to false.
+
+## Troubleshooting
+
+Increase the logging in Tomcat to see log messages for the Keycloak adapter.
+Look at the [openshift/keycloak/logging.properties]() file as an example.
+Then copy that into Tomcat's conf dir. 
+
+## TODOs
+
+Allow the client Access Type to be 'Confidential', requiring a secret to be specified in the keycloak.json file. 
+Proabably specify this as a secret that is exposed as an environment variable?
+
+Allow a logout URL to be configured and displayed in the servlet response.
+
+
+
+
 
 

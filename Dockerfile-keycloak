@@ -1,26 +1,32 @@
 FROM tomcat:8.0-jre8
 MAINTAINER Tim Dudgeon <tdudgeon@informaticsmatters.com>
 
-RUN echo JAVA_OPTS='"-Dcom.squonk.keycloak.baseurl=$KEYCLOAK_SERVER_URL"' > /usr/local/tomcat/bin/setenv.sh
+# You can define Java system parameters for Tomcat by creating a bin/setenv.sh file.
+#RUN echo JAVA_OPTS='"-Dcom.squonk.keycloak.baseurl=$KEYCLOAK_SERVER_URL"' > /usr/local/tomcat/bin/setenv.sh
+
+# Remove the default Tomcat apps. We don't need them and having them adds a security risk.
 RUN rm -rf /usr/local/tomcat/webapps/*
 
-# copy the keycloak jars to the tomcat lib folder
+# copy the keycloak jars to the tomcat lib folder. These need to be available to the container's class loader
 RUN curl -o keycloak.zip https://downloads.jboss.org/keycloak/2.5.5.Final/adapters/keycloak-oidc/keycloak-tomcat8-adapter-dist-2.5.5.Final.zip && unzip -d /usr/local/tomcat/lib/ keycloak.zip && rm keycloak.zip 
 
+# Add the war file as the root webapp.
 ADD build/libs/example-java-servlet.war        /usr/local/tomcat/webapps/ROOT.war
+# Unzip the war file as we need to copy in the keycloak configuration files
 RUN unzip -d /usr/local/tomcat/webapps/ROOT /usr/local/tomcat/webapps/ROOT.war && rm -f /usr/local/tomcat/webapps/ROOT.war
+# NOTE: look for jars in your web that might conflict with the ones that Keycloak has added. 
+# There is the possibility of conflicts that will prevent your webapp starting.
+# If you find some you should unzip your war file and delete them from your app and 
+# use the one from the container's class loader instead. 
 
 COPY openshift/keycloak/web.xml openshift/keycloak/keycloak.json /usr/local/tomcat/webapps/ROOT/WEB-INF/
-COPY openshift/keycloak/context.xml openshift/keycloak/tomcat-users.xml openshift/keycloak/server.xml openshift/keycloak/logging.properties /usr/local/tomcat/conf/
+COPY openshift/keycloak/context.xml openshift/keycloak/tomcat-users.xml openshift/keycloak/server.xml /usr/local/tomcat/conf/
 
-# remove unused or conflicting jars
-#RUN cd /usr/local/tomcat/webapps/portal/WEB-INF/lib && rm commons-codec-*.jar commons-logging-*.jar httpclient*.jar httpcore*.jar\
-# keycloak*.jar jackson-annotations-*.jar jackson-core-*.jar jackson-databind-*.jar servlet-api-3.0.jar
-
-
+# Create a non-priviledged user to run Tomcat
 RUN useradd -u 501 -m -g root tomcat && chown -R tomcat:root /usr/local/tomcat
+# Set file permissions for that user.
 RUN chown -R tomcat:root /usr/local/tomcat
-
+# run as that user
 USER 501
  
 EXPOSE 8080
