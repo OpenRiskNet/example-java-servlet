@@ -1,7 +1,9 @@
 # example-java-servlet
+
 ORN deployment example using Java servlet
-See the build on Jenkins: https://jenkins.openrisknet.org/job/OpenRiskNet/job/example-java-servlet/
 
-Some initial Openshift templates for deploying this app can be found [here](openshift/templates) 
+This is to demonstrate various aspects of deploying a simple OpenRiskNet application
 
-Sample edit #1
+Some initial Openshift templates for deploying this app can be found [here](openshift/templates)
+
+Deployment using Keycloak for SSO is decribed [here](KEYCLOAK.md).
