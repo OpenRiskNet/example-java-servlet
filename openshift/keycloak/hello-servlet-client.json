@@ -1,16 +1,16 @@
 {
     "id": "b210b212-c2f0-43e6-bd63-8997bf2c254e",
     "clientId": "hello-servlet",
-    "rootUrl": "https://hello.os.informaticsmatters.com/",
-    "adminUrl": "https://hello.os.informaticsmatters.com/",
+    "rootUrl": "https://hello-servlet.prod.openrisknet.org/",
+    "adminUrl": "https://hello-servlet.prod.openrisknet.org/",
     "surrogateAuthRequired": false,
     "enabled": true,
     "clientAuthenticatorType": "client-secret",
     "redirectUris": [
-        "https://hello.os.informaticsmatters.com/*"
+        "https://hello-servlet.prod.openrisknet.org/*"
     ],
     "webOrigins": [
-        "https://hello.os.informaticsmatters.com"
+        "https://hello-servlet.prod.openrisknet.org"
     ],
     "notBefore": 0,
     "bearerOnly": false,

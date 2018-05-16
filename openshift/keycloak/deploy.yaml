@@ -8,12 +8,13 @@ metadata:
     tags: "servlet,java,openrisknet"
 labels:
   app: hello-servlet
-  template: service
+  template: deploy-hello-servlet
 message: "Example servlet has been deployed."
 
 objects:
+
 - apiVersion: v1
-  kind: ReplicationController
+  kind: DeploymentConfig
   metadata:
     name: ${APP_NAME}
   spec:
@@ -36,7 +37,21 @@ objects:
             protocol: TCP
           securityContext:
           - runAsUser: MustRunAsNonRoot
+          volumeMounts:
+          - mountPath: /usr/local/tomcat/conf/context.xml
+            name: ${APP_NAME}-sso-config
+            subPath: context.xml
+            readOnly: true
+          - mountPath: /usr/local/tomcat/webapps/ROOT/WEB-INF/keycloak.json
+            name: ${APP_NAME}-sso-config
+            subPath: keycloak.json
+            readOnly: true
         restartPolicy: Always
+        volumes:
+          - name: ${APP_NAME}-sso-config
+            configMap:
+              name: ${APP_NAME}-sso-config
+
 - apiVersion: v1
   kind: Service
   metadata:
@@ -51,12 +66,13 @@ objects:
       name: ${APP_NAME}
     sessionAffinity: None
     type: ClusterIP	  
+
 - apiVersion: v1
   kind: Route
   metadata:
     name: ${APP_NAME}
     annotations:
-      kubernetes.io/tls-acme: "true"
+      kubernetes.io/tls-acme: "false"
   spec:
     host: ${APPLICATION_DOMAIN}
     port:
@@ -64,7 +80,8 @@ objects:
     to: 
       name: ${APP_NAME}
       kind: Service
-    wildcardPolicy: None
+    tls:
+      termination: edge
 
 parameters:
 - name: APP_NAME

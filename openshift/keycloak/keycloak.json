@@ -1,6 +1,6 @@
 {
   "realm": "openrisknet",
-  "auth-server-url": "https://secure-sso.os.informaticsmatters.com/auth",
+  "auth-server-url": "https://sso.prod.openrisknet.org/auth",
   "ssl-required": "external",
   "resource": "hello-servlet",
   "public-client": true,

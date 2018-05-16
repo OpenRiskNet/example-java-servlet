@@ -116,16 +116,17 @@ $ oc process -f $PATH_TO_REPO/openshift/templates/pod.yml -p GREETING=WTF | oc c
 (note that we first need to delete the old pod before deploying it again).
 If you check the results again you will see the message `WTF unauthenticated user`.
 
-So far so good, but orphan pods aren't much use. We really need then to be created by a replication controller.
+So far so good, but orphan pods aren't much use. We really need then to be created by a deployment.
 
-## replication-controller.yml
+## deployment.yml
 
-The main purpose of using a replication controller is:
+The main purpose of using a deployment is:
 
 1. to provide resiliance - if a pod fails it will be replaced with a new one
 1. to provide scalability - you can increase and decrease the number of pods that are running
+1. to allow rolling upgdates - automatically re-deploy when your app is updated
 
-Our replication controller template handles creating the pod that the previous step created.
+Our deployment template handles creating the pod that the previous step created.
 
 First clean up from before:
 
@@ -137,7 +138,7 @@ Now apply the template and create the objects (we'll just jump to the action her
 by step as before if you prefer):
 
 ```
-$ oc process -f $PATH_TO_REPO/openshift/templates/replication-controller.yml | oc create -f -
+$ oc process -f $PATH_TO_REPO/openshift/templates/deployment.yml | oc create -f -
 ```
 
 Let's see the pods:
@@ -153,9 +154,10 @@ You can also look in the web console and you will see the pod running.
 Now let's scale the pod:
 
 ```
-$ oc scale --replicas=3 replicationcontrollers example-java-servlet
-replicationcontroller "example-java-servlet" scaled
+$ oc scale --replicas=3 dc example-java-servlet
+deploymentconfig "example-java-servlet" scaled
 ```
+[Note: a bug in OpenShift may stop this working in some OpenShift versions]
 
 ```
 $ oc get pods
@@ -224,7 +226,8 @@ svc/example-java-servlet   172.30.212.193   <none>        8080/TCP   5s
 NAME                            READY     STATUS    RESTARTS   AGE
 po/example-java-servlet-7frj3   1/1       Running   0          5s
 ```
-Notice the route. This tells you that you should be able to access the app at http://example-java-servlet-myproject.192.168.64.18.nip.io
+Notice the route. This tells you that you should be able to access the app at  the location exposed by your route which will
+ebe something like this: http://example-java-servlet-myproject.prod.openrisknet.org
 
 ## Conclusion
 

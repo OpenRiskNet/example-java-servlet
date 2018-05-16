@@ -7,11 +7,14 @@ metadata:
     iconClass: "icon-tomcat"
     tags: "servlet,java,openrisknet"
 labels:
-  template: example-java-servlet
+  app: example-java-servlet
+  template: deployment
 message: "Example servlet has been deployed."  
+
 objects:
+
 - apiVersion: v1
-  kind: ReplicationController
+  kind: DeploymentConfig
   metadata:
     name: example-java-servlet
   spec:

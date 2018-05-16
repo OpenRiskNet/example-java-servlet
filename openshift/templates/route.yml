@@ -8,12 +8,13 @@ metadata:
     tags: "servlet,java,openrisknet"
 labels:
   app: example-java-servlet
-  template: service
+  template: route
 message: "Example servlet has been deployed."  
 
 objects:
+
 - apiVersion: v1
-  kind: ReplicationController
+  kind: DeploymentConfig
   metadata:
     name: ${APP_NAME}
   spec:
@@ -37,6 +38,7 @@ objects:
           securityContext:
           - runAsUser: MustRunAsNonRoot
         restartPolicy: Always
+
 - apiVersion: v1
   kind: Service
   metadata:
@@ -50,7 +52,8 @@ objects:
     selector:
       name: ${APP_NAME}
     sessionAffinity: None
-    type: ClusterIP	  
+    type: ClusterIP	
+  
 - apiVersion: v1
   kind: Route
   metadata:

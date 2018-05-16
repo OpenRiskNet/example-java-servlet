@@ -26,8 +26,8 @@ To configure this we need to add various things to the Tomcat configuration.
 These files are in the [openshift/keycloak]() directory and will need editing if you are not using
 the standard set up which is:
 
-* Base domain name of `os.informaticsmatters.com`
-* Keycloak found at `https://secure-sso.os.informaticsmatters.com`
+* Base domain name of `prod.openrisknet.org`
+* Keycloak found at `https://sso.prod.openrisknet.org`
 * Keycloak realm of `openrisknet`
 * User requires role of `standard-user`
 
@@ -69,7 +69,7 @@ oc new-project hello-servlet
 Review the [openshift/keycloak/deploy.yaml]() file with respect to your environment. You will need to specify some paramters when deploying.
 Deploy with something like this:
 ```
-oc process -f openshift/keycloak/route.yml -p APPLICATION_DOMAIN=hello.os.informaticsmatters.com -p GREETING=Hiya | oc create -f -
+oc process -f openshift/keycloak/deploy.yml -p APPLICATION_DOMAIN=hello-servlet.prod.openrisknet.org -p GREETING=Hiya | oc create -f -
 ```
 Change the APPLICATION_DOMAIN and GREETING parameters accordingly to get a suitable host name for your app and a customised greeting.
 
