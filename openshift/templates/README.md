@@ -1,7 +1,7 @@
 # Example Templates
 
 A more complex version that shows how to deploy the app using Keycloak for authentication 
-can be found [here](KEYCLOAK.md).
+can be found [here](../../KEYCLOAK.md).
 
 This examples assume you have cloned or forked the openrisknet/example-java-servlet repository and have a local copy.
 Alternatively you can run directly from GitHub by using the full URL to the raw version of the file.
