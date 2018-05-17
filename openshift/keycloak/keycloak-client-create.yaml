@@ -185,4 +185,4 @@ objects:
           volumeMounts:
           - mountPath: /client-creator
             name: ${CLIENT_ID}-client-creator
-        restartPolicy: OnFailure
+        restartPolicy: Never
