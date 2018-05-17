@@ -77,6 +77,7 @@ objects:
         "disable-trust-manager": true,
         "resource": "${CLIENT_ID}",
         "use-resource-role-mappings": false,
+        "principal-attribute": "preferred_username",
         "credentials": { "secret": "${CLIENT_SECRET}" }
       }
     context.xml: |

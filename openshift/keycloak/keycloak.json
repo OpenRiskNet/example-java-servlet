@@ -1,9 +1,0 @@
-{
-  "realm": "openrisknet",
-  "auth-server-url": "https://sso.prod.openrisknet.org/auth",
-  "ssl-required": "external",
-  "resource": "hello-servlet",
-  "public-client": true,
-  "principal-attribute": "preferred_username",
-  "disable-trust-manager": true
-}

@@ -94,6 +94,7 @@ We are now ready to deply the application.
 
 ## Deploy Hello Servlet to OpenShift
  
+Switch to the `example-servlet` project. 
 
 Review the [deploy.yaml]() file with respect to your environment. You will need to specify some paramters when deploying if
 you are not deploying to the OpenRiskNet production site.
@@ -109,7 +110,7 @@ Change the APPLICATION_DOMAIN and GREETING parameters accordingly to get a suita
 
 Try to access it and you will see the Keycloak login prompt.
 Login as the user you created in the openrisknet realm.
-You should see the customised greeting message, something like this: `Hiya 9a3c631b-6eea-43c4-8d6e-ac9d469264fb`.
+You should see the customised greeting message, something like this: `Hiya user1`.
 
 The route has TLS configured, but a trusted certificate is not used by default. Edit the route YAML to deploy a trusted Let's Encrypt
 certificate using the ACME Controller.
